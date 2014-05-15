@@ -1,0 +1,11 @@
+{
+    "name": "midnight/image-block-module",
+    "require": {
+        "midnight/cms-module": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Midnight\\ImageBlockModule\\": "src"
+        }
+    }
+}

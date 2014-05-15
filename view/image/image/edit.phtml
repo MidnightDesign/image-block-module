@@ -1,0 +1,10 @@
+<?php
+/**
+ * @var \Zend\View\Renderer\PhpRenderer $this
+ * @var \Zend\Form\Form                 $form
+ */
+$form->setAttribute('class', $form->getAttribute('class') . ' labels-top');
+$form->get('submit')->setAttribute('value', 'Save image');
+?>
+<h1>Edit Image</h1>
+<?= $this->adminForm($form) ?>
