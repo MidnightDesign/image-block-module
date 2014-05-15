@@ -48,7 +48,7 @@ class InlineOptionsProvider extends DefaultInlineOptionsProvider
                 array('name' => 'zfcadmin/cms/set_image_block_class')
             ));
             $option->setLabel($label);
-            $options[] = $option;
+            array_unshift($options, $option);
         }
 
         return $options;

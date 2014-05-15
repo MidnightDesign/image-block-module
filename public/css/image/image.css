@@ -11,7 +11,8 @@ img.image-block.float {
 img.image-block.block {
   display: block;
   max-width: 100%;
-  margin: 1.5rem auto; }
+  margin: 1.5rem auto;
+  max-height: 90vh; }
 
 .midnight-cms-block.image-block {
   z-index: 5; }
