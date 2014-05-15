@@ -11,7 +11,18 @@ return array(
                 'controller' => __NAMESPACE__ . '\Controller\ImageController',
                 'renderer' => 'imageBlock',
                 'preview_renderer' => 'imageBlockPreview',
+                'inline_options_provider' => __NAMESPACE__ . '\InlineBlockOption\InlineOptionsProvider',
+                'styles' => array(
+                    'block' => 'Block',
+                    'float' => 'Float',
+                ),
+                'inline_container_class' => 'image-block',
             )
+        ),
+    ),
+    'service_manager' => array(
+        'factories' => array(
+            __NAMESPACE__ . '\InlineBlockOption\InlineOptionsProvider' => __NAMESPACE__ . '\InlineBlockOption\InlineOptionsProviderFactory',
         ),
     ),
     'view_helpers' => array(
@@ -23,6 +34,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             __NAMESPACE__ . '\Controller\ImageController' => __NAMESPACE__ . '\Controller\ImageController',
+            __NAMESPACE__ . '\ImageBlock' => __NAMESPACE__ . '\Controller\ImageController',
         ),
     ),
     'view_manager' => array(
@@ -48,8 +60,30 @@ return array(
             'odm_default' => array(
                 'drivers' => array(
                     'Midnight\ImageBlock' => __NAMESPACE__,
-                )
-            )
-        )
-    )
+                ),
+            ),
+        ),
+    ),
+    'router' => array(
+        'routes' => array(
+            'zfcadmin' => array(
+                'child_routes' => array(
+                    'cms' => array(
+                        'child_routes' => array(
+                            'set_image_block_class' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/set-image-block-class/:block_id/:class',
+                                    'defaults' => array(
+                                        'controller' => __NAMESPACE__ . '\ImageBlock',
+                                        'action' => 'set-class'
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+            ),
+        ),
+    ),
 );

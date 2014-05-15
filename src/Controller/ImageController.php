@@ -2,12 +2,14 @@
 
 namespace Midnight\ImageBlockModule\Controller;
 
-use Midnight\ImageBlockModule\Form\ImageForm;
-use Midnight\ImageBlockModule\ImageBlock;
 use Midnight\CmsModule\Controller\AbstractCmsController;
 use Midnight\CmsModule\Controller\Block\BlockControllerInterface;
+use Midnight\CmsModule\Service\BlockTypeManagerInterface;
+use Midnight\ImageBlockModule\Form\ImageForm;
+use Midnight\ImageBlockModule\ImageBlock;
 use Midnight\Page\PageInterface;
 use Zend\Form\FormInterface;
+use Zend\Http\Header\Referer;
 use Zend\Http\PhpEnvironment\Request;
 use Zend\Http\Response;
 use Zend\View\Model\ViewModel;
@@ -22,7 +24,7 @@ class ImageController extends AbstractCmsController implements BlockControllerIn
 {
     public function createAction()
     {
-        $form = new ImageForm();
+        $form = new ImageForm($this->getImageBlockConfig());
         $block = new ImageBlock();
         $form->bind($block);
 
@@ -57,7 +59,7 @@ class ImageController extends AbstractCmsController implements BlockControllerIn
 
     public function editAction()
     {
-        $form = new ImageForm();
+        $form = new ImageForm($this->getImageBlockConfig());
         /** @var $block ImageBlock */
         $block = $this->params()->fromRoute('block');
         /** @var $page PageInterface */
@@ -99,5 +101,44 @@ class ImageController extends AbstractCmsController implements BlockControllerIn
         }
         $vm->setTemplate('image/image/edit.phtml');
         return $vm;
+    }
+
+    public function setClassAction()
+    {
+        $storage = $this->getBlockStorage();
+        $block = $storage->load($this->params()->fromRoute('block_id'));
+        if (!$block instanceof ImageBlock) {
+            throw new \RuntimeException(sprintf(
+                'Expected an ImageBlock, got %s.',
+                is_object($block) ? get_class($block) : gettype($block)
+            ));
+        }
+        $class = $this->params()->fromRoute('class');
+        $block->setClass($class);
+        $storage->save($block);
+
+        $request = $this->getRequest();
+        if ($request instanceof \Zend\Http\Request) {
+            $referer = $request->getHeader('Referer');
+            if ($referer && $referer instanceof Referer) {
+                return $this->redirect()->toUrl((string)$referer->uri());
+            }
+        }
+    }
+
+    /**
+     * @return array
+     */
+    private function getImageBlockConfig()
+    {
+        return $this->getBlockTypeManager()->getConfigFor(new ImageBlock());
+    }
+
+    /**
+     * @return BlockTypeManagerInterface
+     */
+    private function getBlockTypeManager()
+    {
+        return $this->getServiceLocator()->get('cms.block_type_manager');
     }
 }

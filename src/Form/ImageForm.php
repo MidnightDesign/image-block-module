@@ -10,7 +10,10 @@ use Zend\Validator\File\UploadFile;
 
 class ImageForm extends Form
 {
-    public function __construct()
+    /**
+     * @param array $config
+     */
+    public function __construct(array $config)
     {
         parent::__construct();
 
@@ -18,14 +21,16 @@ class ImageForm extends Form
 
         $this->add(new File('image', array('label' => 'Image')));
 
-        $this->add(array(
-            'name' => 'class',
-            'type' => 'Radio',
-            'options' => array(
-                'label' => 'Style',
-                'value_options' => array('block' => 'Block', 'float' => 'Float'),
-            )
-        ));
+        if (!empty($config['styles'])) {
+            $this->add(array(
+                'name' => 'class',
+                'type' => 'Radio',
+                'options' => array(
+                    'label' => 'Style',
+                    'value_options' => $config['styles'],
+                )
+            ));
+        }
 
         $this->add(array(
             'name' => 'submit',
