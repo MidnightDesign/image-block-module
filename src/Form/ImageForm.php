@@ -33,6 +33,11 @@ class ImageForm extends Form
         }
 
         $this->add(array(
+            'name' => 'position',
+            'type' => 'Hidden',
+        ));
+
+        $this->add(array(
             'name' => 'submit',
             'type' => 'Submit',
             'attributes' => array(

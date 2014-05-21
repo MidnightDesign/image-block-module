@@ -21,4 +21,11 @@ img.image-block {
 
 .midnight-cms-block.image-block {
     z-index: 5;
+    &, &.active {
+        background-color: #ffffff;
+    }
+    form {
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
 }

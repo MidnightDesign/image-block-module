@@ -25,8 +25,16 @@ class ImageController extends AbstractCmsController implements BlockControllerIn
     public function createAction()
     {
         $form = new ImageForm($this->getImageBlockConfig());
+
+        $position = $this->params()->fromRoute('position');
+        $form->get('position')->setValue($position);
+
         $block = new ImageBlock();
         $form->bind($block);
+
+        $pageId = $this->params()->fromQuery('page_id');
+        $pageStorage = $this->getPageStorage();
+        $page = $pageStorage->load($pageId);
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -39,17 +47,18 @@ class ImageController extends AbstractCmsController implements BlockControllerIn
                 $data = $form->getData(FormInterface::VALUES_AS_ARRAY);
                 $block = $form->getObject();
                 $block->setFile($data['image']['tmp_name']);
-                $pageId = $this->params()->fromQuery('page_id');
                 if ($pageId) {
-                    $pageStorage = $this->getPageStorage();
-                    $page = $pageStorage->load($pageId);
-                    $page->addBlock($block);
+                    $page->addBlock($block, $data['position']);
                     $pageStorage->save($page);
                     return $this->redirect()->toRoute('zfcadmin/cms/page/edit', array('page_id' => $page->getId()));
                 } else {
                     throw new \Exception('Not implemented.');
                 }
             }
+        } else {
+            $page->addBlock($block, $position);
+            $pageStorage->save($page);
+            return $this->redirect()->toRoute('cms_page', array('slug' => $page->getSlug()));
         }
 
         $vm = new ViewModel(array('form' => $form));
@@ -81,13 +90,11 @@ class ImageController extends AbstractCmsController implements BlockControllerIn
 
             $form->setData($post);
             if ($form->isValid()) {
-                if ($page) {
-                    $pageStorage = $this->getPageStorage();
-                    $pageStorage->save($page);
-                    return $this->redirect()->toRoute('zfcadmin/cms/page/edit', array('page_id' => $page->getId()));
-                } else {
-                    throw new \Exception('Not implemented.');
-                }
+                $data = $form->getData(FormInterface::VALUES_AS_ARRAY);
+                $block = $form->getObject();
+                $block->setFile($data['image']['tmp_name']);
+                $this->getBlockStorage()->save($block);
+                return $this->redirect()->toRoute('zfcadmin/cms/page/edit', array('page_id' => $page->getId()));
             }
         }
 

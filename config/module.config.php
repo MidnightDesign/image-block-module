@@ -23,12 +23,15 @@ return array(
     'service_manager' => array(
         'factories' => array(
             __NAMESPACE__ . '\InlineBlockOption\InlineOptionsProvider' => __NAMESPACE__ . '\InlineBlockOption\InlineOptionsProviderFactory',
+            __NAMESPACE__ . '\Form\ImageForm' => __NAMESPACE__ . '\Form\ImageFormFactory',
         ),
     ),
     'view_helpers' => array(
         'invokables' => array(
-            'imageBlock' => __NAMESPACE__ . '\View\Helper\ImageBlock',
             'imageBlockPreview' => __NAMESPACE__ . '\View\Helper\ImageBlockPreview',
+        ),
+        'factories' => array(
+            'imageBlock' => __NAMESPACE__ . '\View\Helper\ImageBlockFactory',
         ),
     ),
     'controllers' => array(
@@ -81,6 +84,17 @@ return array(
                                 ),
                             ),
                         ),
+                    ),
+                ),
+            ),
+        ),
+    ),
+    'zfc_rbac' => array(
+        'role_provider' => array(
+            'ZfcRbac\Role\InMemoryRoleProvider' => array(
+                'admin' => array(
+                    'permissions' => array(
+                        'cms.block.image.edit',
                     ),
                 ),
             ),
