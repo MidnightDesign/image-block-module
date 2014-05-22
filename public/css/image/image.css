@@ -19,5 +19,6 @@ img.image-block.block {
   .midnight-cms-block.image-block, .midnight-cms-block.image-block.active {
     background-color: #ffffff; }
   .midnight-cms-block.image-block form {
+    border: dashed .3rem #d3d3d3;
     padding: 1.5rem;
     margin-bottom: 1.5rem; }
